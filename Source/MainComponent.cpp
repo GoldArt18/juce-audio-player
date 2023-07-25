@@ -16,12 +16,13 @@ MainComponent::MainComponent()
     
     addAndMakeVisible (&playButton);
     playButton.setButtonText ("Play");
+    
 //    playButton.onClick = [this] { playButtonClicked(); };
 //    playButton.setColour (juce::TextButton::buttonColourId, juce::Colours::green);
 //    playButton.setEnabled (false);
 //
-//    addAndMakeVisible (&stopButton);
-//    stopButton.setButtonText ("Stop");
+    addAndMakeVisible (&stopButton);
+    stopButton.setButtonText ("Stop");
 //    stopButton.onClick = [this] { stopButtonClicked(); };
 //    stopButton.setColour (juce::TextButton::buttonColourId, juce::Colours::red);
 //    stopButton.setEnabled (false);
@@ -52,7 +53,7 @@ void MainComponent::resized()
     setSize(450, 400);
     openButton.setBounds(75, 25, 300, 50);
     playButton.setBounds(75, 100, 300, 50);
-    
+    stopButton.setBounds(75, 175, 300, 50);
     
     // This is called when the MainComponent is resized.
     // If you add any child components, this is where you should
