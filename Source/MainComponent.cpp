@@ -14,10 +14,8 @@ MainComponent::MainComponent()
     openButton.onClick = [this] { DBG("Clicked"); };
     openButton.onStateChange = handleClick;
     
-    
-    //
-//    addAndMakeVisible (&playButton);
-//    playButton.setButtonText ("Play");
+    addAndMakeVisible (&playButton);
+    playButton.setButtonText ("Play");
 //    playButton.onClick = [this] { playButtonClicked(); };
 //    playButton.setColour (juce::TextButton::buttonColourId, juce::Colours::green);
 //    playButton.setEnabled (false);
@@ -53,6 +51,7 @@ void MainComponent::resized()
     // call set bounds
     setSize(450, 400);
     openButton.setBounds(75, 25, 300, 50);
+    playButton.setBounds(75, 100, 300, 50);
     
     
     // This is called when the MainComponent is resized.
