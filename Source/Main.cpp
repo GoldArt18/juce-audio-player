@@ -14,26 +14,20 @@ class NewProjectApplication  : public juce::JUCEApplication
 {
 public:
     //==============================================================================
-    NewProjectApplication() {}
-
-    const juce::String getApplicationName() override       { return ProjectInfo::projectName; }
-    const juce::String getApplicationVersion() override    { return ProjectInfo::versionString; }
-    bool moreThanOneInstanceAllowed() override             { return true; }
-
+public:
     //==============================================================================
-    void initialise (const juce::String& commandLine) override
-    {
-        // This method is where you should put your application's initialisation code..
+    NewProjectApplication() = default;
 
-        mainWindow.reset (new MainWindow (getApplicationName()));
+    const juce::String getApplicationName() override       { return "NewProject"; }
+    const juce::String getApplicationVersion() override    { return "1.0.0"; }
+
+    void initialise (const juce::String&) override
+    {
+        mainWindow.reset (new MainWindow ("NewProject", new MainComponent, *this));
     }
 
-    void shutdown() override
-    {
-        // Add your application's shutdown code here..
+    void shutdown() override                         { mainWindow = nullptr; }
 
-        mainWindow = nullptr; // (deletes our window)
-    }
 
     //==============================================================================
     void systemRequestedQuit() override
@@ -58,19 +52,20 @@ public:
     class MainWindow    : public juce::DocumentWindow
     {
     public:
-        MainWindow (juce::String name)
-            : DocumentWindow (name,
-                              juce::Desktop::getInstance().getDefaultLookAndFeel()
-                                                          .findColour (juce::ResizableWindow::backgroundColourId),
-                              DocumentWindow::allButtons)
+        MainWindow (const juce::String& name, juce::Component* c, JUCEApplication& a)
+            : DocumentWindow (name, juce::Desktop::getInstance().getDefaultLookAndFeel()
+                                                                .findColour (ResizableWindow::backgroundColourId),
+                              juce::DocumentWindow::allButtons)
+            
         {
             setUsingNativeTitleBar (true);
-            setContentOwned (new MainComponent(), true);
+            setContentOwned (c, true);
 
-           #if JUCE_IOS || JUCE_ANDROID
+           #if JUCE_ANDROID || JUCE_IOS
             setFullScreen (true);
            #else
-            setResizable (true, true);
+            setResizable (false, false);
+            setResizeLimits (300, 250, 10000, 10000);
             centreWithSize (getWidth(), getHeight());
            #endif
 
@@ -98,6 +93,7 @@ public:
 
 private:
     std::unique_ptr<MainWindow> mainWindow;
+    
 };
 
 //==============================================================================
