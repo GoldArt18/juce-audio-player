@@ -15,10 +15,10 @@
 //==============================================================================
 /*
 */
-class MoisesWaveform  : public juce::Component
+class MoisesWaveform  : public juce::Component//, public juce::FileDragAndDropTarget, public juce::Timer
 {
 public:
-    MoisesWaveform(juce::AudioFormatManager& formatManager):thumbnailCache (5),                            // [4]
+    MoisesWaveform(juce::AudioFormatManager& formatManager, juce::AudioTransportSource& source):thumbnailCache (5),                            // [4]
     thumbnail (512, formatManager, thumbnailCache)
     {
         // In your constructor, you should add any child components, and
@@ -81,22 +81,22 @@ public:
                                     0.0,                                    // start time
                                     thumbnail.getTotalLength(),             // end time
                                     1.0f);                                  // vertical zoom
-//        auto audioPosition = (float)transportSource.getCurrentPosition();
-//          auto drawPosition =
-//            (audioPosition / thumbnail.getTotalLength()) * (float)thumbnailBounds.getWidth() +
-//            (float)thumbnailBounds.getX();
-//        g.setColour(juce::Colours::black);
-//          g.drawLine(
-//            drawPosition,
-//            (float)thumbnailBounds.getY(),
-//            drawPosition,
-//            (float)thumbnailBounds.getBottom(),
-//            2.0f
-//          );
+        auto audioPosition = (float)audioSource.getCurrentPosition();
+          auto drawPosition =
+            (audioPosition / thumbnail.getTotalLength()) * (float)thumbnailBounds.getWidth() +
+            (float)thumbnailBounds.getX();
+        g.setColour(juce::Colours::black);
+          g.drawLine(
+            drawPosition,
+            (float)thumbnailBounds.getY(),
+            drawPosition,
+            (float)thumbnailBounds.getBottom(),
+            2.0f
+          );
 
-//          if (transportSource.isPlaying()) {
-//            repaint();
-//          }
+          if (transportSource.isPlaying()) {
+            repaint();
+          }
         }
     
     void resized() override
