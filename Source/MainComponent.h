@@ -16,7 +16,7 @@ enum TransportState
     Stopping
 };
 //public juce::FileDragAndDropTarget, public juce::Timer
-class MainComponent  : public juce::AudioAppComponent, public juce::ChangeListener
+class MainComponent  : public juce::AudioAppComponent, public juce::ChangeListener//, public juce::MouseListener//, public juce::Component
 {
 public:
     //==============================================================================
@@ -58,6 +58,7 @@ public:
         
     ~MainComponent() override
     {
+        transportSource.removeChangeListener(this);
         shutdownAudio();
     }
 
@@ -171,6 +172,7 @@ public:
     {
         transportSource.releaseResources();
     }
+    
     void changeListenerCallback (juce::ChangeBroadcaster* source) override
     {
         if (source == &transportSource) transportSourceChanged();
