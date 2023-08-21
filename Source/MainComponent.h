@@ -21,7 +21,7 @@ class MainComponent  : public juce::AudioAppComponent, public juce::ChangeListen
 public:
     //==============================================================================
     MainComponent()
-        : state (TransportState::Stopped), moisesWaveform(formatManager)
+        : state (TransportState::Stopped), moisesWaveform(formatManager, transportSource)
     {
         setSize (450, 400);
         
@@ -38,7 +38,7 @@ public:
         playButton.onClick = [this] { playButtonClicked(); };
         playButton.setColour (juce::TextButton::buttonColourId, juce::Colours::green);
         playButton.setEnabled (false);
-    //
+    
         addAndMakeVisible (&stopButton);
         stopButton.setButtonText ("Stop");
         stopButton.onClick = [this] { stopButtonClicked(); };
@@ -84,25 +84,25 @@ public:
 //        g.fillRect (thumbnailBounds);
 //        g.setColour (juce::Colours::white);
 //        g.drawFittedText ("No File Loaded", thumbnailBounds, juce::Justification::centred, 1);
-////        g.fillAll (juce::Colours::white);
-////        
-////        g.setColour (juce::Colours::mediumblue);
-////        
-////        if (thumbnail.getTotalLength() > 0)
-////        {
-////            int heightPerChannel = (getHeight() - 4) / thumbnail.getNumChannels();
-////            
-////            for (int i = 0; i < thumbnail.getNumChannels(); ++i)
-////            {
-////                thumbnail.drawChannel (g, 2, 2 + heightPerChannel * i,
-////                                       getWidth() - 4, heightPerChannel,
-////                                       startTime, endTime,
-////                                       i, 1.0f);
-////            }
-////            
-////            g.setColour(juce::Colours::tomato);
-////            g.drawRect(mouseDownX ,1 , mouseUpX - mouseDownX, getHeight()-2, 1);
-////        }
+//        g.fillAll (juce::Colours::white);
+//        
+//        g.setColour (juce::Colours::mediumblue);
+//        
+//        if (thumbnail.getTotalLength() > 0)
+//        {
+//            int heightPerChannel = (getHeight() - 4) / thumbnail.getNumChannels();
+//            
+//            for (int i = 0; i < thumbnail.getNumChannels(); ++i)
+//            {
+//                thumbnail.drawChannel (g, 2, 2 + heightPerChannel * i,
+//                                       getWidth() - 4, heightPerChannel,
+//                                       startTime, endTime,
+//                                       i, 1.0f);
+//            }
+//            
+//            g.setColour(juce::Colours::tomato);
+//            g.drawRect(mouseDownX ,1 , mouseUpX - mouseDownX, getHeight()-2, 1);
+//        }
 //    }
 //
 //    

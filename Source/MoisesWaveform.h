@@ -19,12 +19,12 @@ class MoisesWaveform  : public juce::Component, public juce::FileDragAndDropTarg
 {
 public:
     MoisesWaveform(juce::AudioFormatManager& formatManager,
-                   juce::AudioTransportSource& source,
-                   juce::Slider& slider)
-      : transportSource(source),
-        zoomSlider(slider),
-        thumbnailCache(5),
-        thumbnail(512, formatManager, thumbnailCache) // Correct order
+                   juce::AudioTransportSource& source)
+                   //juce::Slider& slider)
+    : thumbnailCache(5),
+    thumbnail(512, formatManager, thumbnailCache),
+    transportSource(source)
+    //zoomSlider(slider) // Correct order
 //
 //    ,juce::AudioFormatManager& formatManager,
 //    juce::AudioTransportSource& source): transportSource (source),thumbnail (512, formatManager, thumbnailCache)                           // [4]
@@ -39,6 +39,19 @@ public:
     {
     }
 
+    void timerCallback() override{
+        
+    }
+    
+    bool isInterestedInFileDrag(const juce::StringArray &files) override {
+        return true;
+    }
+    
+    void filesDropped(const juce::StringArray &files, int x, int y) override{
+        
+    }
+    
+    
     void paint (juce::Graphics& g) override
     {
         // (Our component is opaque, so we must completely fill the background with a solid colour)
@@ -84,12 +97,12 @@ public:
     }
         
     
-    void resized() override
-    {
-        // This method is where you should set the bounds of any child
-        // components that your component contains..
-
-    }
+//    void resized() override
+//    {
+//        // This method is where you should set the bounds of any child
+//        // components that your component contains..
+//
+//    }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MoisesWaveform)
@@ -97,7 +110,7 @@ private:
     juce::AudioThumbnailCache thumbnailCache;  // Declaration order matters!
     juce::AudioThumbnail thumbnail;
     juce::AudioTransportSource& transportSource;
-    juce::Slider& zoomSlider;
+    //juce::Slider& zoomSlider;
     
     
 };
