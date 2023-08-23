@@ -289,7 +289,7 @@ private:
                     transportSource.setSource (newSource.get(), 0, nullptr, reader->sampleRate);       // [12]
                     playButton.setEnabled (true);                                                      // [13]
                     readerSource.reset (newSource.release());
-                    //thumbnail.setSource (new juce::FileInputSource (file));     // [14] add to other class later
+                    moisesWaveform.setSource (new juce::FileInputSource (file));   // [14] add to other class later
                     transportSource.setGain(0.5f);//volume of sound
                 }
             }

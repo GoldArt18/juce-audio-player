@@ -32,6 +32,7 @@ public:
     {
         // In your constructor, you should add any child components, and
         // initialise any special settings that your component needs.
+        //thumbnail.addChangeListener (this);         
         
     }
 
@@ -51,13 +52,17 @@ public:
         
     }
     
+    bool     setSource (juce::InputSource *newSource) {
+        return thumbnail.setSource(newSource);
+    }
     
     void paint (juce::Graphics& g) override
     {
         // (Our component is opaque, so we must completely fill the background with a solid colour)
         g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
-         
+        juce::Rectangle<int> thumbnailBounds (10, 100, getWidth() - 20, getHeight() - 120);
+        
         if (thumbnail.getNumChannels() == 0)
             paintIfNoFileLoaded (g, getLocalBounds());
         else
@@ -78,12 +83,14 @@ public:
 
             g.setColour (juce::Colours::blue);
             auto audioLength = (float) thumbnail.getTotalLength();
-            thumbnail.drawChannels(g, thumbnailBounds, 0.0, audioLength, 1.0f);
+            thumbnail.drawChannels(g, thumbnailBounds, 0.0, thumbnail.getTotalLength(), 1.0f);
              
             g.setColour (juce::Colours::green);
             auto audioPosition = (float) transportSource.getCurrentPosition();
             auto drawPosition = (audioPosition / audioLength) * (float) thumbnailBounds.getWidth() + (float) thumbnailBounds.getX();
             g.drawLine(drawPosition, (float) thumbnailBounds.getY(), drawPosition, (float) thumbnailBounds.getBottom(), 2.0f);
+        
+              
         }
 
     
