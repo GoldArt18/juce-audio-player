@@ -68,7 +68,6 @@ public:
         
         juce::Rectangle<int> thumbnailBounds (25, 225, getWidth() - 50, getHeight() - 250); //change size of wave paint
         
-        
         moisesWaveform.setBounds(thumbnailBounds);
 
     }
@@ -97,7 +96,7 @@ public:
     void changeListenerCallback (juce::ChangeBroadcaster* source) override
     {
         if (source == &transportSource) transportSourceChanged();
-        //if (source == &thumbnail)       thumbnailChanged();
+        
         if (source == &transportSource)
         {
             if (transportSource.isPlaying())
@@ -120,18 +119,7 @@ public:
 
     
     
-//    void mouseDown(const MouseEvent& e)
-//        {
-//            mouseDownX = e.x;
-//            startSel = startTime + (endTime - startTime) * (double) e.x / (double) getWidth();
-//        }
-//
-//        void mouseDrag(const MouseEvent& e)
-//        {
-//            mouseUpX = e.x;
-//            endSel = startTime + (endTime - startTime) * (double) e.x / (double) getWidth();
-//            repaint();
-//        }
+
     
 
        
@@ -178,7 +166,7 @@ private:
     {
         chooser = std::make_unique<juce::FileChooser> ("Select a Wave file to play...",
                                                        juce::File::getSpecialLocation(juce::File::SpecialLocationType::userMusicDirectory),
-                                                       "*.wav, *.mp3, *.m4p");
+                                                       "*.wav, *.mp3");
         auto chooserFlags = juce::FileBrowserComponent::openMode
                           | juce::FileBrowserComponent::canSelectFiles;
 
@@ -230,8 +218,7 @@ private:
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
     juce::AudioTransportSource transportSource;//dont move
     TransportState state;
-//    juce::AudioThumbnailCache thumbnailCache;                  // [1]
-//    juce::AudioThumbnail thumbnail;
+
     MoisesWaveform moisesWaveform;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)

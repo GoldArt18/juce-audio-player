@@ -17,29 +17,22 @@
 //==============================================================================
 /*
 */
-class MoisesWaveform  : public juce::Component, public juce::FileDragAndDropTarget, public juce::Timer, public juce::ChangeListener//, public juce::Slider::Listener
+class MoisesWaveform  : public juce::Component, public juce::FileDragAndDropTarget, public juce::Timer, public juce::ChangeListener
 {
 public:
     MoisesWaveform(juce::AudioFormatManager& formatManager,
                    juce::AudioTransportSource& source)
-                   //juce::Slider& slider)
+                   
     : thumbnailCache(5),
     thumbnail(512, formatManager, thumbnailCache),
     transportSource(source)
     
-    //zoomSlider(slider) // Correct order
-//
-//    ,juce::AudioFormatManager& formatManager,
-//    juce::AudioTransportSource& source): transportSource (source),thumbnail (512, formatManager, thumbnailCache)                           // [4]
-//    thumbnail (512, formatManager, thumbnailCache)
+    
     {
-        // In your constructor, you should add any child components, and
-        // initialise any special settings that your component needs.
+        
         thumbnail.addChangeListener (this);
         
-//        scrubberSlider.setSliderStyle(juce::Slider::LinearBarVertical);
-//        scrubberSlider.addListener(this);
-//        addAndMakeVisible(scrubberSlider);
+
         
         currentPositionMarker.setFill (juce::Colours::white.withAlpha (0.85f));
         addAndMakeVisible (currentPositionMarker);
@@ -54,8 +47,7 @@ public:
     void setRange (juce::Range<double> newRange)
         {
             visibleRange = newRange;
-            //scrollbar.setCurrentRange (visibleRange);
-            //updateCursorPosition();
+            
             repaint();
         }
     
@@ -88,13 +80,13 @@ public:
         
     }
     
-    bool     setSource (juce::InputSource *newSource) {
+    bool setSource (juce::InputSource *newSource) {
         return thumbnail.setSource(newSource);
     }
     
     void paint (juce::Graphics& g) override
     {
-        // (Our component is opaque, so we must completely fill the background with a solid colour)
+        
         g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
         juce::Rectangle<int> thumbnailBounds (10, 100, getWidth() - 20, getHeight() - 120);
@@ -104,12 +96,6 @@ public:
         else
             paintIfFileLoaded (g, getLocalBounds());
         
-//        juce::Rectangle<int> thumbnailBounds (10, 100, getWidth() - 20, getHeight() - 120);
-//         
-//                if (thumbnail.getNumChannels() == 0)
-//                    paintIfNoFileLoaded (g, thumbnailBounds);
-//                else
-//                    paintIfFileLoaded (g, thumbnailBounds);
     }
     
     
@@ -150,18 +136,12 @@ public:
     void mouseDrag (const juce::MouseEvent& e) override
     {
         
-        
             transportSource.setPosition(juce::jmax(0.0, xToTime((float)e.x)));
             DBG("dragged");
             repaint();
         
     }
 
-    bool isWithinWaveform(const juce::Point<int>& point)
-    {
-        juce::Rectangle<int> thumbnailBounds(10, 100, getWidth() - 20, getHeight() - 120);
-        return thumbnailBounds.contains(point);
-    }
 
         void mouseUp (const juce::MouseEvent&) override
         {
@@ -176,12 +156,7 @@ public:
         repaint();
     }
     
-//    void resized() override
-//    {
-//        // This method is where you should set the bounds of any child
-//        // components that your component contains..
-//
-//    }
+
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MoisesWaveform)
@@ -193,10 +168,6 @@ private:
     juce::DrawableRectangle currentPositionMarker;
     
     juce::Range<double> visibleRange;
-    //juce::Slider& zoomSlider;
-    
-    //juce::Slider scrubberSlider;
-    
     
 };
 
