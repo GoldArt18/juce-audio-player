@@ -12,10 +12,12 @@
 
 #include <JuceHeader.h>
 
+
+
 //==============================================================================
 /*
 */
-class MoisesWaveform  : public juce::Component, public juce::FileDragAndDropTarget, public juce::Timer
+class MoisesWaveform  : public juce::Component, public juce::FileDragAndDropTarget, public juce::Timer, public juce::ChangeListener//, public juce::Slider::Listener
 {
 public:
     MoisesWaveform(juce::AudioFormatManager& formatManager,
@@ -24,6 +26,7 @@ public:
     : thumbnailCache(5),
     thumbnail(512, formatManager, thumbnailCache),
     transportSource(source)
+    
     //zoomSlider(slider) // Correct order
 //
 //    ,juce::AudioFormatManager& formatManager,
@@ -32,16 +35,49 @@ public:
     {
         // In your constructor, you should add any child components, and
         // initialise any special settings that your component needs.
-        //thumbnail.addChangeListener (this);         
+        thumbnail.addChangeListener (this);
         
+//        scrubberSlider.setSliderStyle(juce::Slider::LinearBarVertical);
+//        scrubberSlider.addListener(this);
+//        addAndMakeVisible(scrubberSlider);
+        
+        currentPositionMarker.setFill (juce::Colours::white.withAlpha (0.85f));
+        addAndMakeVisible (currentPositionMarker);
+        startTimerHz(60);
+        visibleRange = juce::Range<double>(0.0f, thumbnail.getTotalLength());//get size after loaded
     }
+    
+    void changeListenerCallback (juce::ChangeBroadcaster* source){
+        repaint();
+    }
+    
+    void setRange (juce::Range<double> newRange)
+        {
+            visibleRange = newRange;
+            //scrollbar.setCurrentRange (visibleRange);
+            //updateCursorPosition();
+            repaint();
+        }
+    
+    double xToTime (const float x) const
+    {
+        DBG("Width of the Component: " + juce::String(getWidth()));
+        DBG("VisibleRange Start: " + juce::String(visibleRange.getStart()));
+        DBG("VisibleRange Length: " + juce::String(visibleRange.getLength()));
+        
+        double time = (x / (float) getWidth()) * (visibleRange.getLength()) + visibleRange.getStart();
+        DBG("Clicked at X: " + juce::String(x) + " which corresponds to time: " + juce::String(time));
+        return time;
+    }
+
+
 
     ~MoisesWaveform() override
     {
     }
 
     void timerCallback() override{
-        
+        repaint();
     }
     
     bool isInterestedInFileDrag(const juce::StringArray &files) override {
@@ -76,16 +112,18 @@ public:
 //                    paintIfFileLoaded (g, thumbnailBounds);
     }
     
+    
+    
     void paintIfFileLoaded (juce::Graphics& g, const juce::Rectangle<int>& thumbnailBounds)
         {
-            g.setColour (juce::Colours::white);
+            g.setColour (juce::Colours::black);
             g.fillRect (thumbnailBounds);
 
-            g.setColour (juce::Colours::blue);
+            g.setColour (juce::Colours::aqua);
             auto audioLength = (float) thumbnail.getTotalLength();
             thumbnail.drawChannels(g, thumbnailBounds, 0.0, thumbnail.getTotalLength(), 1.0f);
              
-            g.setColour (juce::Colours::green);
+            g.setColour (juce::Colours::blue);
             auto audioPosition = (float) transportSource.getCurrentPosition();
             auto drawPosition = (audioPosition / audioLength) * (float) thumbnailBounds.getWidth() + (float) thumbnailBounds.getX();
             g.drawLine(drawPosition, (float) thumbnailBounds.getY(), drawPosition, (float) thumbnailBounds.getBottom(), 2.0f);
@@ -103,6 +141,40 @@ public:
         g.drawFittedText ("No File Loaded", thumbnailBounds, juce::Justification::centred, 1);
     }
         
+    void mouseDown (const juce::MouseEvent& e) override
+    {
+        
+            mouseDrag(e);
+    }
+
+    void mouseDrag (const juce::MouseEvent& e) override
+    {
+        
+        
+            transportSource.setPosition(juce::jmax(0.0, xToTime((float)e.x)));
+            DBG("dragged");
+            repaint();
+        
+    }
+
+    bool isWithinWaveform(const juce::Point<int>& point)
+    {
+        juce::Rectangle<int> thumbnailBounds(10, 100, getWidth() - 20, getHeight() - 120);
+        return thumbnailBounds.contains(point);
+    }
+
+        void mouseUp (const juce::MouseEvent&) override
+        {
+            DBG("up");
+            //transportSource.start();
+        }
+    
+    void updateAfterLoading()
+    {
+        visibleRange = juce::Range<double>(0.0f, thumbnail.getTotalLength());
+        DBG("Thumbnail Total Length after loading: " + juce::String(thumbnail.getTotalLength()));
+        repaint();
+    }
     
 //    void resized() override
 //    {
@@ -117,7 +189,13 @@ private:
     juce::AudioThumbnailCache thumbnailCache;  // Declaration order matters!
     juce::AudioThumbnail thumbnail;
     juce::AudioTransportSource& transportSource;
+    
+    juce::DrawableRectangle currentPositionMarker;
+    
+    juce::Range<double> visibleRange;
     //juce::Slider& zoomSlider;
+    
+    //juce::Slider scrubberSlider;
     
     
 };
